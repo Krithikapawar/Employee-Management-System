@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee }) => {
+const EmployeeForm = ({ addEmployee, updateEmployee, editingEmployee,setEditingEmployee}) => {
   const navigate = useNavigate();
   const [employee, setEmployee] = useState({
     name: "",

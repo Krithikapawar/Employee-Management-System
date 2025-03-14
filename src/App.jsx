@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import EmployeeList from "./components/EmployeeList";
@@ -9,7 +9,7 @@ import Navbar from "./components/Navbar";
 const PrivateRoute = ({ children }) => {
   return localStorage.getItem("isAuthenticated") ? (
     <>
-      <Navbar />  {/* ✅ Navbar is only rendered inside private routes */}
+      <Navbar />  
       {children}
     </>
   ) : (
@@ -18,8 +18,15 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState(() => {
+    const savedEmployees = localStorage.getItem("employees");
+    return savedEmployees ? JSON.parse(savedEmployees) : [];
+  });
   const [editingEmployee, setEditingEmployee] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("employees", JSON.stringify(employees));
+  }, [employees]);
 
   const addEmployee = (employee) => {
     setEmployees([...employees, { id: Date.now(), ...employee }]);
@@ -53,7 +60,7 @@ function App() {
           path="/register"
           element={
             <PrivateRoute>
-              <EmployeeForm addEmployee={addEmployee} updateEmployee={updateEmployee} editingEmployee={editingEmployee} />
+              <EmployeeForm addEmployee={addEmployee} updateEmployee={updateEmployee} editingEmployee={editingEmployee} setEditingEmployee={setEditingEmployee} />
             </PrivateRoute>
           }
         />
